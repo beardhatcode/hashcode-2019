@@ -1,7 +1,7 @@
-from utils import score
 import random
 
-def solver(tags, horizontal, vertical):
+
+def solver(_images, horizontal, vertical, _num_tags):
     slides = list(map(lambda x: [x.num], list(horizontal)))
     vertical = list(vertical)
     for i in range(0, len(vertical), 2):

@@ -7,11 +7,6 @@ from collections import namedtuple
 from random_solver import solver
 from utils import score
 
-# Debugging format.
-DEBUG_FORMAT = '%(levelname)s:%(filename)s:%(funcName)s:%(asctime)s %(message)s\n'
-
-Image = namedtuple('Image', ['num', 'tags'])
-
 # Main method
 def main():
     logging.debug("Debug enabled! :)")
@@ -21,7 +16,7 @@ def main():
     num = int(a.readline().strip())
     horizontals = set()
     verticals = set()
-    tags = []
+    images = []
 
     encountered = {}
     j = 0
@@ -32,15 +27,15 @@ def main():
                 encountered[tag] = j
                 j += 1
 
-        tags.append(Image(i, frozenset(map(lambda t: encountered[t], taglist))))
+        images.append(frozenset(map(lambda t: encountered[t], taglist)))
         if orientation == 'H':
-            horizontals.add(tags[-1])
+            horizontals.add(images[-1])
         else:
-            verticals.add(tags[-1])
+            verticals.add(images[-1])
 
-    slides = solver(tags, horizontals, verticals)
+    slides = solver(images, horizontals, verticals, j)
 
-    print(score(slides, tags), file=sys.stderr)
+    print(score(slides, images), file=sys.stderr)
     print(len(slides))
     for s in slides:
         print(" ".join(map(str, s)))

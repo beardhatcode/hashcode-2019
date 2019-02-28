@@ -4,8 +4,9 @@ import random_solver as subsolver
 from utils import score
 import random
 
-def solver(tags, horizontals, verticals, *_args, **_kwargs):
-	solution = subsolver.solver(tags, horizontals, verticals)
+def solver(tags, horizontals, verticals, *args, **kwargs):
+	solution = subsolver.solver(tags, horizontals, verticals, *args, **kwargs)
+
 	for _ in range(100000):
 		a = random.randint(1, len(solution) - 3)
 		b = random.randint(1, len(solution) - 3)

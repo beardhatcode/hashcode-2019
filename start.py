@@ -4,7 +4,9 @@ import fileinput
 import sys
 from collections import namedtuple
 
-from random_optimizer import solver
+
+
+from sliding_window import solver
 from utils import score
 
 Image = namedtuple('Image', ['num', 'orientation', 'tags'])

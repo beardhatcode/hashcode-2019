@@ -7,6 +7,8 @@ import random
 def solver(tags, horizontals, verticals, *args, **kwargs):
 	solution = subsolver.solver(tags, horizontals, verticals, *args, **kwargs)
 
+	if len(solution) < 5: return solution
+
 	for _ in range(100000):
 		a = random.randint(1, len(solution) - 3)
 		b = random.randint(1, len(solution) - 3)

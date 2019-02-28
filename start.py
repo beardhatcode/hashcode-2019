@@ -4,20 +4,12 @@ import fileinput
 import sys
 from collections import namedtuple
 
+from empty import solver
+
 # Debugging format.
 DEBUG_FORMAT = '%(levelname)s:%(filename)s:%(funcName)s:%(asctime)s %(message)s\n'
 
 Image = namedtuple('Image', ['num', 'tags'])
-
-
-def score(slides, tags):
-    s = 0
-    for i in range(len(slides) - 1):
-        tags1 = tags[slides[i]].tags[0] if len(slides[i]) == 1 else tags[slides[i]].tags[0] + tags[slides[i]].tags[1]
-        tags2 = tags[slides[i + 1]].tags[0] if len(slides[i + 1]) == 1 else tags[slides[i + 1]].tags[0] + tags[slides[i + 1]].tags[1]
-        s += min(len(tags1 | tags2), len(tags1 - tags2), len(tags2 - tags1))
-    return s
-
 
 # Main method
 def main():
@@ -39,13 +31,13 @@ def main():
                 encountered[tag] = j
                 j += 1
 
-        tags.append(Image(i, set(map(lambda t: encountered[t], taglist))))
+        tags.append(Image(i, frozenset(map(lambda t: encountered[t], taglist))))
         if orientation == 'H':
             horizontals.add(tags[-1])
         else:
             verticals.add(tags[-1])
 
-    slides = []
+    slides = solver(tags, horizontals, verticals)
 
     print(len(slides))
     for s in slides:

@@ -4,7 +4,8 @@ import fileinput
 import sys
 from collections import namedtuple
 
-from empty import solver
+from random_solver import solver
+from utils import score
 
 # Debugging format.
 DEBUG_FORMAT = '%(levelname)s:%(filename)s:%(funcName)s:%(asctime)s %(message)s\n'
@@ -39,9 +40,10 @@ def main():
 
     slides = solver(tags, horizontals, verticals)
 
+    print(score(slides, tags), file=sys.stderr)
     print(len(slides))
     for s in slides:
-        print(" ".join(s))
+        print(" ".join(map(str, s)))
 
 
 # Entry point of the application.

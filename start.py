@@ -2,60 +2,61 @@ import logging
 import os
 import fileinput
 import sys
-
+from collections import namedtuple
 
 # Debugging format.
 DEBUG_FORMAT = '%(levelname)s:%(filename)s:%(funcName)s:%(asctime)s %(message)s\n'
 
+Image = namedtuple('Image', ['num', 'tags'])
+
+
+def score(slides, tags):
+    s = 0
+    for i in range(len(slides) - 1):
+        tags1 = tags[slides[i]].tags[0] if len(slides[i]) == 1 else tags[slides[i]].tags[0] + tags[slides[i]].tags[1]
+        tags2 = tags[slides[i + 1]].tags[0] if len(slides[i + 1]) == 1 else tags[slides[i + 1]].tags[0] + tags[slides[i + 1]].tags[1]
+        s += min(len(tags1 | tags2), len(tags1 - tags2), len(tags2 - tags1))
+    return s
+
+
 # Main method
 def main():
     logging.debug("Debug enabled! :)")
-    
+
     # Meta-data input
     a = fileinput.input(sys.argv[1])
-    num_rows, num_col, num_vehicle, num_rides, bonus, simstep = map(int, a.readline().rstrip().split(" "))
+    num = int(a.readline().strip())
+    horizontals = set()
+    verticals = set()
+    tags = []
 
-    # Data input
-    rides = []
-    cars = []
+    encountered = {}
+    j = 0
+    for i in range(num):
+        orientation, _, *taglist = a.readline().strip().split()
+        for tag in taglist:
+            if tag not in encountered:
+                encountered[tag] = j
+                j += 1
 
-    # Create car objects
-    for i in range(num_vehicle):
-        cars.append(Car(i))
+        tags.append(Image(i, set(map(lambda t: encountered[t], taglist))))
+        if orientation == 'H':
+            horizontals.add(tags[-1])
+        else:
+            verticals.add(tags[-1])
 
-    # Create map object
-    sim_map = Map(num_rows, num_col)
+    slides = []
 
-    # Read in the different rides
-    for i in range(num_rides):
-        start_row, start_col, end_row, end_col, earliest_start, late_finish = map(int,a.readline().rstrip().split(" "))
-        logging.debug("ride {}, {}, {}, {}, {}, {}".format(start_row, start_col, end_row, end_col, earliest_start, late_finish))
-        rides.append(Ride(i, start_row, start_col, end_row, end_col, earliest_start, late_finish))
+    print(len(slides))
+    for s in slides:
+        print(" ".join(s))
 
-    solver = IterativeSolver(rides, cars, sim_map, bonus, simstep)
-    solver.solve()
-
-    # Write away solution!
-    output_name = '{}.out'.format(sys.argv[1].split('/')[-1].split('.in')[0])
-    SolutionWriter.write_solution('./dist/{}'.format(output_name), cars)
 
 # Entry point of the application.
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('Usage: {} <dataset>'.format(sys.argv[0]))
         sys.exit(1)
-
-    # Check if DEBUG mode is on or not.
-    if "DEBUG" not in os.environ.keys() or os.environ["DEBUG"] == "True":
-
-        # Debug setup to stdout and log file.
-        logging.basicConfig(level=logging.DEBUG)
-        log_formatter = logging.Formatter(DEBUG_FORMAT)
-        root_logger = logging.getLogger()
-
-        file_handler = logging.FileHandler("debug.log", mode='w')
-        file_handler.setFormatter(log_formatter)
-        root_logger.addHandler(file_handler)
 
     # Execute the main function.
     main()

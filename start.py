@@ -7,6 +7,8 @@ from collections import namedtuple
 from random_solver import solver
 from utils import score
 
+Image = namedtuple('Image', ['num', 'tags'])
+
 # Main method
 def main():
     logging.debug("Debug enabled! :)")

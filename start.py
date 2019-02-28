@@ -37,7 +37,7 @@ def main():
 
     slides = solver(images, horizontals, verticals, j)
 
-    print(score(slides, images), file=sys.stderr)
+    print(score(slides, images), file=open(3, 'w'))
     print(len(slides))
     for s in slides:
         print(" ".join(map(str, s)))

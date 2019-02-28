@@ -29,7 +29,7 @@ def main():
                 encountered[tag] = j
                 j += 1
 
-        images.append(frozenset(map(lambda t: encountered[t], taglist)))
+        images.append(Image(i, frozenset(map(lambda t: encountered[t], taglist))))
         if orientation == 'H':
             horizontals.add(images[-1])
         else:

@@ -1,10 +1,10 @@
 
-import random_solver as subsolver
+import better_vertical_random_solver as subsolver
 
 from utils import score
 from collections import deque
 
-SIZE = 100
+SIZE = 200
 
 def solver(tags, horizontals, verticals, *args, **kwargs):
 	old = subsolver.solver(tags, horizontals, verticals, *args, **kwargs)
